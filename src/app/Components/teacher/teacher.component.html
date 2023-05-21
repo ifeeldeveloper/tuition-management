@@ -1,0 +1,177 @@
+<!-- <p>Doctor Works</p> -->
+<!--<router-outlet></router-outlet> -->
+
+<div>
+  <button style="float: right; margin-right:10px; margin-bottom: 20px; " class="btn btn-primary" data-bs-toggle="modal"
+    data-bs-target="#exampleModal">Add Teacher</button>
+</div>
+
+<div>
+  <table border="1" class="table table-striped">
+    <thead>
+
+      <th scope="col">S.N</th>
+      <th scope="col">Teacher Name</th>
+      <th scope="col">Address</th>
+      <th scope="col">Contact</th>
+      <th scope="col">Subjects</th>
+      <th scope="col">Action</th>
+
+    </thead>
+    <tbody>
+      <tr *ngFor="let data of teacherList; let i=index">
+        <td>{{i+1}}</td>
+        <td>{{data.FirstName}}&nbsp;{{data.LastName}}</td>
+        <td>{{data.Address}}</td>
+        <td>{{data.Contact}}</td>
+        <td>{{data.Subjects}}</td>
+        <td>
+          <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editTeacherRow"
+            (click)="selectedTeacher(data.TeacherId)" >Edit</button>
+          <button type="button" class="btn btn-danger" style="margin-left: 5px;" data-bs-toggle="modal"
+            data-bs-target="#deleteTeacher" (click)="fetchTeacherId(data.TeacherId)">Delete</button>
+        </td>
+
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+
+
+
+<!-- Modal to Add Teacher-->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg ">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">New Teacher</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="teacher.TeacherFormGroup">
+          <div class="row">
+            <div class="col-md-6 mb-4">
+              <label for="FirstName">First Name</label>
+              <input type="text" formControlName="FirstName" class="form-control">
+              <small *ngIf="teacher.TeacherFormGroup.controls['FirstName'].invalid&&
+              teacher.TeacherFormGroup.controls['FirstName'].touched" class="text-danger">Validation required in First Name</small>
+            </div>
+            <div class="col-md-6 mb-4">
+              <label for="LastName">Last Name</label>
+              <input type="text" formControlName="LastName" class="form-control">
+              <small *ngIf="teacher.TeacherFormGroup.controls['LastName'].invalid&&
+              teacher.TeacherFormGroup.controls['LastName'].touched" class="text-danger">Validation required in Last Name</small>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6 mb-4">
+              <label for="Address">Address</label>
+              <input type="text" formControlName="Address" class="form-control">
+              <small *ngIf="teacher.TeacherFormGroup.controls['Address'].invalid&&
+              teacher.TeacherFormGroup.controls['Address'].touched" class="text-danger">Validation required in Address</small>
+            </div>
+            <div class="col-md-6 mb-4">
+              <label for="Contact">Contact</label>
+              <input type="text" formControlName="Contact" class="form-control">
+              <small *ngIf="teacher.TeacherFormGroup.controls['Contact'].invalid&&
+              teacher.TeacherFormGroup.controls['Contact'].touched" class="text-danger">Validation required in Contact</small>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6 mb-4">
+              <label for="Subjects">Subjects</label>
+              <input type="text" formControlName="Subjects" class="form-control">
+              <small *ngIf="teacher.TeacherFormGroup.controls['Subjects'].invalid&&
+              teacher.TeacherFormGroup.controls['Subjects'].touched" class="text-danger">Validation required in Subjects</small>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" #closebutton class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" [disabled]="teacher.TeacherFormGroup.invalid" class="btn btn-primary"
+          (click)="addTeacher()">Submit</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal to Edit Teacher -->
+<div class="modal fade" id="editTeacherRow" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg ">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Edit Teacher</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"  (click)="resetForm()"  aria-label="Close"></button>
+      </div>
+      <div class="modal-body" *ngIf="isTeacherSelected">
+        <form [formGroup]="teacher.TeacherFormGroup">
+        <div class="row">
+          <div class="col-md-6 mb-4">
+            <label for="FirstName">First Name</label>
+            <input type="text"formControlName="FirstName" class="form-control">
+            <small *ngIf="teacher.TeacherFormGroup.controls['FirstName'].invalid && 
+            teacher.TeacherFormGroup.controls['FirstName'].touched" class="text-danger">Validation required in First Name</small>
+          </div>
+          <div class="col-md-6 mb-4">
+            <label for="LastName">Last Name</label>
+            <input type="text" formControlName="LastName" class="form-control">
+            <small *ngIf="teacher.TeacherFormGroup.controls['LastName'].invalid &&
+              teacher.TeacherFormGroup.controls['LastName'].touched" class="text-danger">Validation required in Last Name</small>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-6 mb-4">
+            <label for="Address">Address</label>
+            <input type="text" formControlName="Address" class="form-control">
+            <small *ngIf="teacher.TeacherFormGroup.controls['Address'].invalid &&
+              teacher.TeacherFormGroup.controls['Address'].touched" class="text-danger">Validation required in Address </small>
+          </div>
+          <div class="col-md-6 mb-4">
+            <label for="Contact">Contact</label>
+            <input type="text" formControlName="Contact" class="form-control">
+            <small *ngIf="teacher.TeacherFormGroup.controls['Contact'].invalid &&
+              teacher.TeacherFormGroup.controls['Contact'].touched" class="text-danger">Validation required in Contact</small>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-6 mb-4">
+            <label for="Subjects">Subjects</label>
+            <input type="text" formControlName="Subjects" class="form-control">
+            <small *ngIf="teacher.TeacherFormGroup.controls['Subjects'].invalid &&
+              teacher.TeacherFormGroup.controls['Subjects'].touched" class="text-danger">Validation required in Subjects</small>
+          </div>
+        </div>
+      </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" #updatebutton class="btn btn-secondary" data-bs-dismiss="modal" (click)="resetForm()">Close</button>
+        <button type="button" [disabled]="teacher.TeacherFormGroup.invalid" class="btn btn-primary" (click)="editTeacher()">Update</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+<!-- Modal to delete Confirmation-->
+<div class="modal fade" id="deleteTeacher" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Are you sure, you want to delete ? </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" #deletebutton class="btn btn-secondary" data-bs-dismiss="modal">No</button>
+        <button type="button" class="btn btn-danger" (click)="removeTeacher()">Yes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<router-outlet></router-outlet>

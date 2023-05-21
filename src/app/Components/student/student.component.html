@@ -1,0 +1,247 @@
+<div>
+    <button style="float: right; margin-right:10px; margin-bottom: 20px; " class="btn btn-primary" data-bs-toggle="modal"
+      data-bs-target="#exampleModal" (click)="resetStudentForm()">Add Student</button>
+  </div>
+  
+  <div>
+    <table border="1" class="table table-striped">
+      <thead>
+  
+        <th scope="col">S.N</th>
+        <th scope="col">Student Name</th>
+        <th scope="col">Address</th>
+        <th scope="col">Contact</th>
+        <th scope="col">Age</th>
+        <th scope="col">Teacher</th>
+        <th scope="col">Action</th>
+  
+      </thead>
+      <tbody>
+        <tr *ngFor="let data of studentList; let i=index">
+          <td>{{i+1}}</td>
+          <td>{{data.FirstName}}&nbsp;{{data.LastName}}</td>
+          <td>{{data.Address}}</td>
+          <td>{{data.Contact}}</td>
+          <td>{{data.Age}}</td>
+          <td>{{data.Teacher.FirstName}}&nbsp;{{data.Teacher.LastName}}</td>
+          <td>
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#AddSubject"
+              style="margin-left: 5px;"  (click)="fetchId(data.StudentId)" >Add Subject</button>
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editStudentRow"
+              (click)="selectedStudent(data.StudentId)" style="margin-left: 5px;">Edit</button>
+            <button type="button" class="btn btn-danger" style="margin-left: 5px;" data-bs-toggle="modal"
+              data-bs-target="#deleteStudent" (click)="fetchStudentId(data.StudentId)">Delete</button>
+          </td>
+  
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  
+  <!-- Modal to Add Student-->
+  <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg ">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="exampleModalLabel">New Student</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form [formGroup]="student.StudentFormGroup">
+            <div class="row">
+              <div class="col-md-6 mb-4">
+                <label for="FirstName">First Name</label>
+                <input type="text" formControlName="FirstName" class="form-control">
+                <small *ngIf="student.StudentFormGroup.controls['FirstName'].invalid &&
+               student.StudentFormGroup.controls['FirstName'].touched" class="text-danger">First Name required</small>
+              </div>
+              <div class="col-md-6 mb-4">
+                <label for="LastName">Last Name</label>
+                <input type="text" formControlName="LastName" class="form-control">
+                <small *ngIf="student.StudentFormGroup.controls['LastName'].invalid &&
+               student.StudentFormGroup.controls['LastName'].touched" class="text-danger">Last Name required</small>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6 mb-4">
+                <label for="Address">Address</label>
+                <input type="text" formControlName="Address" class="form-control">
+                <small *ngIf="student.StudentFormGroup.controls['Address'].invalid &&
+               student.StudentFormGroup.controls['Address'].touched" class="text-danger">Address required</small>
+              </div>
+              <div class="col-md-6 mb-4">
+                <label for="Contact">Contact</label>
+                <input type="text" formControlName="Contact" class="form-control">
+                <small *ngIf="student.StudentFormGroup.controls['Contact'].invalid &&
+               student.StudentFormGroup.controls['Contact'].touched" class="text-danger">Contact required</small>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6 mb-4">
+                <label for="Age">Age</label>
+                <input type="text" formControlName="Age" class="form-control">
+                <small *ngIf="student.StudentFormGroup.controls['Age'].invalid &&
+               student.StudentFormGroup.controls['Age'].touched" class="text-danger">Age required</small>
+              </div>
+              <div class="col-md-6 mb-4">
+                <label for="Teacher">Teacher</label>
+                <select name="" class="form-select" formControlName="TeacherId" id="" (change)="onTeacherChange($event)">
+                  <option value="">Choose Doctor</option>
+                  <option value="{{item.TeacherId}}" *ngFor="let item of teacherList">
+                    {{item.FirstName}}&nbsp;{{item.LastName}}</option>
+                </select>
+                <small *ngIf="student.StudentFormGroup.controls['TeacherId'].invalid &&
+               student.StudentFormGroup.controls['TeacherId'].touched" class="text-danger">Teacher required</small>
+  
+              </div>
+            </div>
+          </form>
+        </div>
+  
+        <div class="modal-footer">
+          <button type="button" #closebutton class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="button" [disabled]="student.StudentFormGroup.invalid" class="btn btn-primary"
+            (click)="addStudent()">Submit</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  
+  <!-- Modal to Edit Student -->
+  <div class="modal fade" id="editStudentRow" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg ">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="exampleModalLabel">Edit Student</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body" *ngIf="isStudentSelected">
+          <form [formGroup]="student.StudentFormGroup">
+            <div class="row">
+              <div class="col-md-6 mb-4">
+                <label for="FirstName">First Name</label>
+                <input type="text" formControlName="FirstName" class="form-control">
+                <small *ngIf="student.StudentFormGroup.controls['FirstName'].invalid &&
+               student.StudentFormGroup.controls['FirstName'].touched" class="text-danger">First Name required</small>
+              </div>
+              <div class="col-md-6 mb-4">
+                <label for="LastName">Last Name</label>
+                <input type="text" formControlName="LastName" class="form-control">
+                <small *ngIf="student.StudentFormGroup.controls['LastName'].invalid &&
+               student.StudentFormGroup.controls['LastName'].touched" class="text-danger">Last Name required</small>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6 mb-4">
+                <label for="Address">Address</label> 
+                <input type="text" formControlName="Address" class="form-control">
+                <small *ngIf="student.StudentFormGroup.controls['Address'].invalid &&
+               student.StudentFormGroup.controls['Address'].touched" class="text-danger">Address required</small>
+              </div>
+              <div class="col-md-6 mb-4">
+                <label for="Contact">Contact</label> 
+                <input type="text" formControlName="Contact" class="form-control">
+                <small *ngIf="student.StudentFormGroup.controls['Contact'].invalid &&
+               student.StudentFormGroup.controls['Contact'].touched" class="text-danger">Contact required</small>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6 mb-4">
+                <label for="Age">Age</label> 
+                <input type="text" formControlName="Age" class="form-control">
+                <small *ngIf="student.StudentFormGroup.controls['Age'].invalid &&
+               student.StudentFormGroup.controls['Age'].touched" class="text-danger">Age required</small>
+              </div>
+              <div class="col-md-6 mb-4">
+                <label for="Teacher">Teacher</label> 
+  
+                <select name="" id="" role="button" formControlName="TeacherId" class="form-select"
+                  (change)="onTeacherChange($event)"> 
+                  <option [value]="item.TeacherId" *ngFor="let item of teacherList;let i=index"
+                    [selected]="item.TeacherId===techId">{{item.FirstName}}&nbsp;{{item.LastName}}
+                  </option>
+                </select>
+                <small *ngIf="student.StudentFormGroup.controls['TeacherId'].invalid &&
+              student.StudentFormGroup.controls['TeacherId'].touched" class="text-danger">Teacher required</small>
+  
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" #updatebutton class="btn btn-secondary" (click)="resetStudentForm()"
+            data-bs-dismiss="modal">Close</button>
+          <button type="button" [disabled]="student.StudentFormGroup.invalid" class="btn btn-primary"
+            (click)="editStudent()">Update</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Modal to delete Student-->
+  <div class="modal fade" id="deleteStudent" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Are you sure, you want to delete ? </h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+  
+        <div class="modal-footer">
+          <button type="button" #deletebutton class="btn btn-secondary" data-bs-dismiss="modal">No</button>
+          <button type="button" class="btn btn-danger" (click)="removeStudent()">Yes</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  
+  <!-- Modal to Add Subject-->
+  <div class="modal fade" id="AddSubject" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg ">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="exampleModalLabel" (click)="onAddSubject()"  >Add Subject</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form [formGroup]="subject.SubjectForm">
+            <div class="row">
+              <div class="col-md-6 mb-4">
+                <label for="Subject">Subject</label>
+                <input type="text" formControlName="Description" class="form-control">
+                <small *ngIf="subject.SubjectForm.controls['Description'].invalid &&
+               subject.SubjectForm.controls['Description'].touched" class="text-danger">Subject required</small>
+              </div>
+              <div class="col-md-6 mb-4" style="margin-top: 23px;">
+                <button class="btn btn-primary"  (click)="addSubject()">Add</button>
+              </div>
+            </div>
+          </form>
+  
+          <div *ngIf="isSubjectAdded">
+            <table class="table">
+              <thead>
+                <th>Id</th>
+                <th>Subject</th>
+              </thead>
+              <tbody>
+                <tr *ngFor="let items of subjectArray.SubjectList; let i=index">
+                <td>{{i+1}}</td>
+                <td>{{items.Description}}</td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+  
+          <div class="modal-footer">
+            <button type="button" #closesubject class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="button"   class="btn btn-primary" (click)="onSubjectSubmit()">Submit</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <router-outlet></router-outlet>
