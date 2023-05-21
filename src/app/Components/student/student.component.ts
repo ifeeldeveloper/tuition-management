@@ -154,29 +154,7 @@ export class StudentComponent implements OnInit {
 
        this.subjectArray.SubjectList.push(this.subject.SubjectForm.value);
       this.subject.SubjectForm.reset();
-      this.isSubjectAdded=true;
-      
-
-      
-
-      // this.subject.SubjectForm.controls['SubjectId'].setValue(this.studentId);
-      // let subjectValue: Subjects=new Subjects();
-      // subjectValue=this.subject.SubjectForm.value;
-
-      // this._service.postSubject(subjectValue).subscribe(
-      //   res=>{
-      //     alert("Subject added successfully");
-      //     console.log(res);
-
-      //   },
-      //   err=>{
-      //     console.log(err);
-      //     alert("Failed to add");
-
-      //   }
-      // );
-
-     
+      this.isSubjectAdded=true;     
 
     }
 
